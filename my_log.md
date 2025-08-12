@@ -128,3 +128,17 @@ dependency failed to start: container gsm8k-custom-recipe-dspy-gateway-1 is unhe
         ```
         - Rate limit reached due to requests per minute. Have to see how much RPM is needed for this app.
     - TensorZero UI shows 10 inferences, consistent with 10 requests (9,561 input tokens) visible under Usage in the OpenAI API dashboard by `gpt-4o-mini-2024-07-18`.
+-  Unable to increase OpenAI usage limits because
+    ```
+    Increasing your limits
+    Your organization is currently in Usage tier 1. Your limits will automatically be increased once you move to the next usage tier based on the criteria outlined below. Visit our usage tiers documentation to learn more about the limits associated with each tier.
+    Current tier
+    Usage tier 1
+    Once the following criteria are met, you'll automatically move to the next tier:
+    At least $50 spent on the API since account creation.
+    At least 7 days passed since first successful payment.
+    View payment history
+    Buy credits
+    Next tier
+    Usage tier 2
+    ```
