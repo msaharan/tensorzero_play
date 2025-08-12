@@ -77,4 +77,54 @@ dependency failed to start: container gsm8k-custom-recipe-dspy-gateway-1 is unhe
         gateway-1     |     }
         gateway-1     | }
         ```
+-  Add OpenAI API usage credit. Restart Jupyter notebook kernel. Run `docker compose down` and `docker compose up` again.
+   - Opening localhost:3000 shows
+        ```
+        gateway-1     | 2025-08-12T09:57:36.880479Z  INFO gateway: TensorZero Gateway is listening on 0.0.0.0:3000
+        gateway-1     | 2025-08-12T09:57:36.880540Z  INFO gateway: ├ API Base Path: /
+        gateway-1     | 2025-08-12T09:57:36.880546Z  INFO gateway: ├ Configuration: /app/config/tensorzero.toml
+        gateway-1     | 2025-08-12T09:57:36.880550Z  INFO gateway: ├ Observability: enabled (database: tensorzero)
+        gateway-1     | 2025-08-12T09:57:36.880553Z  INFO gateway: └ OpenTelemetry: disabled
+        gateway-1     | 2025-08-12T09:57:48.651011Z  WARN tensorzero_core::error: Route not found: GET /
+        ```
+    - Opening localhost:4000 shows TensorZero UI
+    - Run all Jupyter notebook cells again.
+    - Error in the second cell under "Run example"
+        ```
+        2025-08-12T09:59:54.418884Z  WARN tensorzero_internal::error: Request failed: HTTP status server error (502 Bad Gateway) for url (http://localhost:3000/inference)
+        Error (<class 'tensorzero.types.TensorZeroError'>): TensorZeroError (status code 502): {"error":"All variants failed with errors: gpt_4o_mini_baseline: All model providers failed to infer with errors: openai: Error 429 Too Many Requests from openai client: {\n    \"error\": {\n        \"message\": \"Rate limit reached for gpt-4o-mini in organization org-2UNBOwAjq6LkaA8Fl347aXVc on requests per min (RPM): Limit 500, Used 500, Requested 1. Please try again in 120ms. Visit https://platform.openai.com/account/rate-limits to learn more.\",\n        \"type\": \"requests\",\n        \"param\": null,\n        \"code\": \"rate_limit_exceeded\"\n    }\n}\n\ngpt_4o_mini_optimized: All model providers failed to infer with errors: openai: Error 429 Too Many Requests from openai client: {\n    \"error\": {\n        \"message\": \"Rate limit reached for gpt-4o-mini in organization org-2UNBOwAjq6LkaA8Fl347aXVc on requests per min (RPM): Limit 500, Used 500, Requested 1. Please try again in 120ms. Visit https://platform.openai.com/account/rate-limits to learn more.\",\n        \"type\": \"requests\",\n        \"param\": null,\n        \"code\": \"rate_limit_exceeded\"\n    }\n}\n"}
+        ```
+    - Error in the third cell under "Run example"
+        ```
+        2025-08-12T09:59:56.443204Z  WARN tensorzero::client_input: Deprecation Warning: passing in an object for `content` is deprecated. Please use an array of content blocks instead.
+        Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...
+        Running test inferences:   0%|          | 1/200 [00:00<02:35,  1.28it/s]
+        2025-08-12T09:59:57.209262Z  WARN tensorzero_internal::error: Request failed: HTTP status server error (502 Bad Gateway) for url (http://localhost:3000/inference)
+        Error (<class 'tensorzero.types.TensorZeroError'>): TensorZeroError (status code 502): {"error":"All variants failed with errors: gpt_4o_mini_baseline: All model providers failed to infer with errors: openai: Error 429 Too Many Requests from openai client: {\n    \"error\": {\n        \"message\": \"Rate limit reached for gpt-4o-mini in organization org-2UNBOwAjq6LkaA8Fl347aXVc on requests per min (RPM): Limit 500, Used 500, Requested 1. Please try again in 120ms. Visit https://platform.openai.com/account/rate-limits to learn more.\",\n        \"type\": \"requests\",\n        \"param\": null,\n        \"code\": \"rate_limit_exceeded\"\n    }\n}\n"}
+        ```
+        ```
+        ---------------------------------------------------------------------------
+        ZeroDivisionError                         Traceback (most recent call last)
+        Cell In[8], line 26
+            23 success_rate = len(results) / total_results
+            24 print(f"Success rate: {success_rate:.1%}")
+        ---> 26 accuracy = sum(results) / len(results)
+            27 n = len(results)
+            28 z = norm.ppf(0.975)  # 95% confidence interval
 
+        ZeroDivisionError: division by zero
+        ```
+    - Error in the terminal:
+        ```
+        gateway-1     | 2025-08-12T10:00:01.104713Z ERROR inference{otel.name="function_inference" function_name="solve_math_problem" variant_name="gpt_4o_mini_baseline" inference_id="01989db8-f173-7400-9523-a7af92abbba3" episode_id="01989db8-f173-7400-9523-a7b3ee82aa66"}:infer{function_name=solve_math_problem variant_name=gpt_4o_mini_baseline otel.name="variant_inference" stream=false}:infer_model_request{model_name=openai::gpt-4o-mini}:infer{model_name="openai::gpt-4o-mini" otel.name="model_inference" stream=false}: tensorzero_core::error: All model providers failed to infer with errors: openai: Error 429 Too Many Requests from openai client: {
+        gateway-1     |     "error": {
+        gateway-1     |         "message": "Rate limit reached for gpt-4o-mini in organization org-2UNBOwAjq6LkaA8Fl347aXVc on requests per min (RPM): Limit 500, Used 500, Requested 1. Please try again in 120ms. Visit https://platform.openai.com/account/rate-limits to learn more.",
+        gateway-1     |         "type": "requests",
+        gateway-1     |         "param": null,
+        gateway-1     |         "code": "rate_limit_exceeded"
+        gateway-1     |     }
+        gateway-1     | }
+        gateway-1     | 
+        ```
+        - Rate limit reached due to requests per minute. Have to see how much RPM is needed for this app.
+    - TensorZero UI shows 10 inferences, consistent with 10 requests (9,561 input tokens) visible under Usage in the OpenAI API dashboard by `gpt-4o-mini-2024-07-18`.
