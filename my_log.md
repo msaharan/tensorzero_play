@@ -26,7 +26,7 @@ dependency failed to start: container gsm8k-custom-recipe-dspy-gateway-1 is unhe
             28 z = norm.ppf(0.975)  # 95% confidence interval
 
         ZeroDivisionError: division by zero
-    ```
+        ```
     - Because localhost:3000 shows "{"error":"Route not found: GET /"}"
     - Also, OpenAI Client says: "You exceeded your current quota..."
 - Run `docker-compose down` and `docker-compose up`.
